@@ -1,0 +1,53 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if requesting user is an admin
+    function isAdmin() {
+      return request.auth != null && (
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
+        request.auth.token.admin == true
+      );
+    }
+
+    // Public published content read helper
+    function isPublished() {
+      return resource.data.status == 'published';
+    }
+
+    // Admins collection: only admins can read and write admin records
+    match /admins/{adminId} {
+      allow read, write: if request.auth != null && (request.auth.uid == adminId || isAdmin());
+    }
+
+    // Songs collection
+    match /songs/{songId} {
+      allow read: if isPublished() || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // Albums collection
+    match /albums/{albumId} {
+      allow read: if isPublished() || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // Timeline collection
+    match /timeline/{eventId} {
+      allow read: if isPublished() || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // Achievements collection
+    match /achievements/{achievementId} {
+      allow read: if isPublished() || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // Settings collection (site configuration, featured items, announcement banners)
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}

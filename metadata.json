@@ -1,0 +1,6 @@
+{
+  "name": "SM4LYF Legacy",
+  "description": "An independent digital archive and fan platform documenting the music, career, and legacy of Ghanaian Dancehall artist Shatta Wale.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
